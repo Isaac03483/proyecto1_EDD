@@ -1,0 +1,3 @@
+/home/mio/Escritorio/2023/EDD/proyecto1_EDD/cmake-build-debug/CMakeFiles/proyecto1_EDD.dir
+/home/mio/Escritorio/2023/EDD/proyecto1_EDD/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/mio/Escritorio/2023/EDD/proyecto1_EDD/cmake-build-debug/CMakeFiles/rebuild_cache.dir
