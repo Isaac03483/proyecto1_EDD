@@ -22,12 +22,6 @@ public:
         this->listaCanciones = listaCanciones;
     }
 
-    PlayList(string nombre, string descripcion){
-        this->nombre = nombre;
-        this->descripcion = descripcion;
-        this->listaCanciones = NULL;
-    }
-
 };
 
 class NodoPlayList{
@@ -52,7 +46,10 @@ public:
         this->primero = NULL;
     }
 
-    void insertar(NodoPlayList* nodo){
+    void insertar(PlayList* playList){
+
+        NodoPlayList* nodo = new NodoPlayList(playList);
+
         if(this->primero == NULL){
             primero = nodo;
             tamanio++;
@@ -98,6 +95,17 @@ public:
 
         NodoPlayList* nodoEliminar = encontrarEn(posicion);
         cout<<"Nodo a eliminar: "<<nodoEliminar->playList->nombre<<".\n";
+
+    }
+
+    PlayList* encontraPlaylistEn(int posicion){
+        if(posicion > tamanio){
+            cout<<"No se ha encontrado la posicion: "<<posicion<<" porque la lista de playlist tiene un tamaño de: "<<tamanio<<"\n";
+            return NULL;
+        }
+
+        NodoPlayList* nodoPlayList = encontrarEn(posicion);
+        return  nodoPlayList->playList;
 
     }
 

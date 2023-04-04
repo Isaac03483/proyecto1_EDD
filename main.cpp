@@ -22,9 +22,11 @@ void eliminarCancion();
 void agregarPlaylist();
 void buscarPlaylist();
 void eliminarPlaylist();
-void agregarCancionAPlaylist();
+void agregarCancionPlaylist(ListaCanciones* canciones);
+void eliminarCancionPlaylist(ListaCanciones* canciones);
 
-ListaCanciones listaCanciones = ListaCanciones();
+ListaCanciones* listaCanciones = new ListaCanciones();
+ListaPlayList* listaPlayList = new ListaPlayList();
 /*
 int main(){
     Cancion cancion1("cancion1", "path1");
@@ -100,10 +102,11 @@ void opcionCanciones(){
                 break;
             case 3:
                 cout<<CELESTE<<"\n\t.:CANCIONES:."<<NC<<"\n";
-                listaCanciones.listar();
+                listaCanciones->listar();
                 break;
             case 4:
-                cargaDatos();
+                cout<<CELESTE<<"\n\t.:BUSCAR CANCIÓN:."<<NC<<"\n";
+                buscarCancion();
                 break;
             case 5:
                 cout<<VERDE<<"Volviendo al menú principal."<<NC<<"\n";
@@ -128,24 +131,146 @@ void agregarCancion(){
     Cancion* cancion =new Cancion();
     cancion->nombre = nombreCancion;
     cancion->path = pathCancion;
-    listaCanciones.insertar(cancion);
+
+    int option = 0;
+    cout<<"¿Desea ingresar la canción en una posición en específico?\n"
+        <<"1. Si.\n"
+        <<"2. No\n";
+    cin>>option;
+    if(option == 1){
+        cout<<"Ingrese la posición en la que se ingresará la canción: ";
+        cin>>option;
+        listaCanciones->insertarEn(cancion, option);
+        return;
+    }
+
+
+    listaCanciones->insertar(cancion);
     cout<<VERDE<<"Cancion agregada exitosamente."<<NC<<"\n";
 
 }
 
 void eliminarCancion(){
     int opcionEliminar;
-    listaCanciones.listar();
+    listaCanciones->listar();
     cout<<"\nIngrese el número de canción que desee eliminar: ";
     cin>>opcionEliminar;
 
-    listaCanciones.eliminarEn(opcionEliminar);
+    listaCanciones->eliminarEn(opcionEliminar);
+
+}
+
+void buscarCancion(){
+    string nombre = "";
+    cout<<"Ingrese el nombre de la canción a buscar: ";
+    cin>>nombre;
+    string descripcion = listaCanciones->obtenerPorNombre(nombre);
+
+    if(descripcion.empty()){
+        cout<<ROJO<<"NO SE HA ENCONTRADO LA CANCIÓN"<<NC<<"\n";
+        return;
+    }
+
+    cout<<descripcion;
 
 }
 
 void opcionPlaylist(){
+    int opcion = 0;
+    do {
+        fflush(stdin);
+        menuPlaylist();
+        cin>>opcion;
+        switch (opcion) {
+            case 1:
+                cout<<CELESTE<<"\n\t.:CREANDO PLAYLIST NUEVA:."<<NC<<"\n";
+                agregarPlaylist();
+                break;
+            case 2:
+                cout<<CELESTE<<"\n\t.:LISTANDO PLAYLIST:."<<NC<<"\n";
+                listaPlayList->listar();
+                break;
+            case 3:
+                cout<<CELESTE<<"\n\t.:ELIMINAR PLAYLIST:."<<NC<<"\n";
+                eliminarPlaylist();
+                break;
+            case 4:
+                cout<<CELESTE<<"\n\t.:ACTUALIZAR PLAYLIST:."<<NC<<"\n";
+
+                break;
+            case 5:
+                cout<<CELESTE<<"\n\t.:AGREGAR CANCION:."<<NC<<"\n";
+                buscarPlaylist();
+                break;
+            case 6:
+                cout<<CELESTE<<"\n\t.:ELIMINAR CANCION:."<<NC<<"\n";
+
+                listaPlayList->listar();
+                break;
+            case 7:
+                cout<<VERDE<<"Volviendo al menú principal."<<NC<<"\n";
+                break;
+            default:
+                cout<<"\n"<<ROJO<<"Opción incorrecta."<<NC<<"\n\n";
+        }
+    } while(opcion != 7);
+}
+
+void agregarPlaylist(){
+    string nombrePlaylist = "";
+    string descripcionPlaylist = "";
+    ListaCanciones* canciones = new ListaCanciones();
+
+    cout<<"Ingrese  el nombre de la playlist: ";
+    cin>>nombrePlaylist;
+    cout<<"Ingrese la descripción de la playlist: ";
+    cin>>descripcionPlaylist;
+
+    int opcion = 0;
+    cout<<"Desea crear una lista canciones ahora (si no lo desea puede hacerlo después): 1.Si/2. No\n";
+    cin>>opcion;
+
+    if(opcion == 1){
+        agregarCancionPlaylist(canciones);
+    }
+
+    PlayList* playList = new PlayList(nombrePlaylist,descripcionPlaylist, canciones);
+    listaPlayList->insertar(playList);
+    cout<<VERDE<<"PLAYLIST CREADA CON EXITO"<<NC<<"\n";
+}
+
+void eliminarPlaylist(){
+    int indice = 0;
+    listaPlayList->listar();
+    cout<<"INGRESE EL INDICE DE LA PLAYLIST A ELIMINAR: ";
+    cin>>indice;
+
+    listaPlayList->eliminarEn(indice);
+    cout<<VERDE<<"PLAYLIST ELIMINADA CON EXITO"<<NC<<"\n";
+}
+
+void buscarPlaylist(){
+    int indice = 0;
+    listaPlayList->listar();
+    cout<<"\nIngrese el indice de la playlist: ";
+    cin>>indice;
+    PlayList* playList = listaPlayList->encontraPlaylistEn(indice);
+    if(playList == NULL){
+        cout<<ROJO<<"NO SE HA ENCONTRADO LA CANCIÓN"<<NC<<"\n";
+    }
+
+    agregarCancionPlaylist(playList->listaCanciones);
+}
+
+void agregarCancionPlaylist(ListaCanciones* canciones){
+
 
 }
+
+void eliminarCancionPlaylist(ListaCanciones* canciones){
+
+}
+
 
 void opcionReproduccion(){
 
@@ -182,8 +307,9 @@ void menuPlaylist(){
         <<"2. Listar playlist."<<"\n"
         <<"3. Eliminar playlist."<<"\n"
         <<"4. Actualizar playlist."<<"\n"
-        <<"4. Agregar canción."<<"\n"
-        <<"4. Eliminar canción."<<"\n"
+        <<"5. Agregar canción."<<"\n"
+        <<"6. Eliminar canción."<<"\n"
+        <<"7. Volver."<<"\n"
         <<"Ingrese la opción que desee realizar: "
     ;
 }

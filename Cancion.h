@@ -65,7 +65,9 @@ public:
 
     }
 
-    void insertarEn(NodoCancion* nodoInsertar, int posicion){
+    void insertarEn(Cancion* cancion, int posicion){
+        NodoCancion* nodoInsertar = new NodoCancion();
+        nodoInsertar->cancion = cancion;
         if(posicion > tamanio){
             cout<<"Imposible agregar la canción en la posición: "<<posicion<<" porque la lista de canciones tiene un tamaño de: "<<tamanio<<"\n";
             return;
@@ -74,6 +76,8 @@ public:
         if(posicion == 1){
             nodoInsertar->siguiente = this->primero;
             this->primero = nodoInsertar;
+            cout<<"Cancion agregada exitosamente."<<"\n";
+
             return;
         }
 
@@ -81,6 +85,8 @@ public:
 
         nodoInsertar->siguiente = nodoEncontrar->siguiente;
         nodoEncontrar->siguiente = nodoInsertar;
+        cout<<"Cancion agregada exitosamente."<<"\n";
+
     }
 
     void eliminarEn(int posicion){
@@ -91,7 +97,9 @@ public:
 
         if(posicion == 1){
             cout<<"Eliminando canción: "<<primero->cancion->nombre<<"\n";
+            NodoCancion* nodoEliminar = primero;
             primero = this->primero->siguiente;
+            nodoEliminar->~NodoCancion();
             return;
         }
 
@@ -99,9 +107,21 @@ public:
         NodoCancion* nodoEliminar = nodoAnterior->siguiente;
         cout<<"Eliminando canción: "<< nodoEliminar->cancion->nombre<<"\n";
         nodoAnterior->siguiente = nodoEliminar->siguiente;
-        delete(nodoEliminar);
+        nodoEliminar->~NodoCancion();
+    }
 
+    string obtenerPorNombre(string nombre){
+        int indice = 0;
+        NodoCancion* nodoCancion = this->primero;
+        while(nodoCancion != NULL){
+            if(nodoCancion->cancion->nombre == nombre){
+                return indice+". "+nodoCancion->cancion->nombre+" "+nodoCancion->cancion->path;
+            }
+            indice++;
+            nodoCancion = nodoCancion->siguiente;
+        }
 
+        return "";
 
     }
 
