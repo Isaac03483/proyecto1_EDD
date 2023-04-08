@@ -138,6 +138,16 @@ public:
 
     }
 
+    Cancion* encontrarCancionEn(int indice){
+        if(indice > tamanio){
+            cout<<"CANCIÓN NO ENCONTRADA\n";
+            return NULL;
+        }
+
+        NodoCancion* nodoCancion = encontrarEn(indice);
+        return nodoCancion->cancion;
+    }
+
 
 private:
 
@@ -156,7 +166,7 @@ private:
         int actual = 1;
         NodoCancion* nodo = this->primero;
 
-        while(actual != posicion-1 && actual < tamanio){
+        while(actual < posicion-1 && actual < tamanio){
             actual++;
             nodo = nodo->siguiente;
         }

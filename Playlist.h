@@ -34,6 +34,10 @@ public:
         siguiente = NULL;
     }
 
+    virtual ~NodoPlayList() {
+
+    }
+
 };
 
 class ListaPlayList{
@@ -81,7 +85,7 @@ public:
         NodoPlayList* nodo = this-> primero;
 
         while(nodo != NULL){
-            cout<<++posicion<<". "<<nodo->playList->nombre<<"\n";
+            cout<<++posicion<<". Nombre: "<<nodo->playList->nombre<<". Descripción:"<<nodo->playList->descripcion<<"\n";
             nodo = nodo->siguiente;
         }
 
@@ -93,8 +97,17 @@ public:
             return;
         }
 
-        NodoPlayList* nodoEliminar = encontrarEn(posicion);
-        cout<<"Nodo a eliminar: "<<nodoEliminar->playList->nombre<<".\n";
+        if(posicion == 1){
+            NodoPlayList* nodoEliminar = this->primero;
+            this->primero = this->primero->siguiente;
+            nodoEliminar->~NodoPlayList();
+        }
+
+        NodoPlayList* nodoAnterior = encontrarEn(posicion);
+        NodoPlayList* nodoEliminar = nodoAnterior->siguiente;
+        nodoAnterior->siguiente = nodoEliminar->siguiente;
+        nodoEliminar->~NodoPlayList();
+
 
     }
 
@@ -104,8 +117,12 @@ public:
             return NULL;
         }
 
+        if(posicion == 1){
+            return this->primero->playList;
+        }
+
         NodoPlayList* nodoPlayList = encontrarEn(posicion);
-        return  nodoPlayList->playList;
+        return  nodoPlayList->siguiente->playList;
 
     }
 
@@ -125,7 +142,7 @@ private:
     NodoPlayList* encontrarEn(int posicion){
         int actual = 0;
         NodoPlayList* nodo = this->primero;
-        while(actual != posicion-1 && actual < tamanio){
+        while(actual < posicion-2 && actual < tamanio){
             actual++;
             nodo=nodo->siguiente;
         }
