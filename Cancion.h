@@ -98,18 +98,20 @@ public:
         }
 
         if(posicion == 1){
-            cout<<"Eliminando canción: "<<primero->cancion->nombre<<"\n";
+//            cout<<"Eliminando canción: "<<primero->cancion->nombre<<"\n";
             NodoCancion* nodoEliminar = primero;
             primero = this->primero->siguiente;
             nodoEliminar->~NodoCancion();
+            tamanio--;
             return;
         }
 
         NodoCancion* nodoAnterior = encontrarEn(posicion);
         NodoCancion* nodoEliminar = nodoAnterior->siguiente;
-        cout<<"Eliminando canción: "<< nodoEliminar->cancion->nombre<<"\n";
+//        cout<<"Eliminando canción: "<< nodoEliminar->cancion->nombre<<"\n";
         nodoAnterior->siguiente = nodoEliminar->siguiente;
         nodoEliminar->~NodoCancion();
+        tamanio--;
     }
 
     string obtenerPorNombre(string nombre){
@@ -148,7 +150,7 @@ public:
         }
 
         NodoCancion* nodoCancion = encontrarEn(indice);
-        return nodoCancion->cancion;
+        return nodoCancion->siguiente->cancion;
     }
 
 

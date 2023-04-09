@@ -101,12 +101,14 @@ public:
             NodoPlayList* nodoEliminar = this->primero;
             this->primero = this->primero->siguiente;
             nodoEliminar->~NodoPlayList();
+            tamanio--;
         }
 
         NodoPlayList* nodoAnterior = encontrarEn(posicion);
         NodoPlayList* nodoEliminar = nodoAnterior->siguiente;
         nodoAnterior->siguiente = nodoEliminar->siguiente;
         nodoEliminar->~NodoPlayList();
+        tamanio--;
 
 
     }
