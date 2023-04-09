@@ -1,7 +1,5 @@
 #include <iostream>
 #include "Playlist.h"
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_mixer.h>
 
 
 #define ROJO "\e[0;31m"
@@ -104,7 +102,7 @@ void opcionCanciones(){
                 eliminarCancion();
                 break;
             case 3:
-                cout<<CELESTE<<"\n\t.:CANCIONES:."<<NC<<"\n";
+                cout<<CELESTE<<"\n\t.:LISTA DE CANCIONES:."<<NC<<"\n";
                 listaCanciones->listar();
                 break;
             case 4:
@@ -136,7 +134,7 @@ void agregarCancion(){
     cancion->path = pathCancion;
 
     int option = 0;
-    cout<<"¿Desea ingresar la canción en una posición en específico?\n"
+    cout<<VERDE<<"¿Desea ingresar la canción en una posición en específico?"<<NC<<"\n"
         <<"1. Si.\n"
         <<"2. No\n";
     cin>>option;
@@ -145,11 +143,16 @@ void agregarCancion(){
         cin>>option;
         listaCanciones->insertarEn(cancion, option);
         return;
+    } else if(option == 2){
+        listaCanciones->insertar(cancion);
+        cout<<VERDE<<"Cancion agregada exitosamente."<<NC<<"\n";
+    } else {
+        cout<<ROJO<<"OPCIÓN INCORRECTA."<<NC<<"\n";
+
     }
 
 
-    listaCanciones->insertar(cancion);
-    cout<<VERDE<<"Cancion agregada exitosamente."<<NC<<"\n";
+
 
 }
 
@@ -159,6 +162,30 @@ void eliminarCancion(){
     cout<<"\nIngrese el número de canción que desee eliminar: ";
     cin>>opcionEliminar;
 
+    Cancion* cancionEliminar = listaCanciones->encontrarCancionEn(opcionEliminar);
+
+    if(cancionEliminar == NULL){
+        return;
+    }
+
+    cout<<"Canción a eliminar: "<<cancionEliminar->nombre<<"\n";
+
+    NodoPlayList* nodoPlay = listaPlayList->primero;
+    while(nodoPlay != NULL){
+        NodoCancion* nodoCancion = nodoPlay->playList->listaCanciones->primero;
+
+        while(nodoCancion != NULL){
+            if(nodoCancion->cancion == cancionEliminar){
+                cout<<ROJO<<"NO SE PUEDE ELIMINAR LA CANCIÓN YA QUE SE ENCUENTRA EN UNA PLAYLIST"<<NC<<"\n";
+                return;
+            }
+
+            nodoCancion = nodoCancion->siguiente;
+        }
+
+        nodoPlay = nodoPlay->siguiente;
+
+    }
     listaCanciones->eliminarEn(opcionEliminar);
 
 }
@@ -219,6 +246,8 @@ void opcionPlaylist(){
 }
 
 void agregarPlaylist(){
+    fflush(stdin);
+
     string nombrePlaylist = "";
     string descripcionPlaylist = "";
     ListaCanciones* canciones = new ListaCanciones();
@@ -252,13 +281,20 @@ void eliminarPlaylist(){
 }
 
 void buscarPlaylist(int opcion){
+
+    if(listaPlayList->tamanio == 0){
+        cout<<ROJO<<"NO HA AGREGADO NINGUNA PLAYLIST AÚN."<<NC<<"\n";
+        return;
+    }
+
+
     int indice = 0;
     listaPlayList->listar();
     cout<<"\nIngrese el indice de la playlist: ";
     cin>>indice;
     PlayList* playList = listaPlayList->encontraPlaylistEn(indice);
     if(playList == NULL){
-        cout<<ROJO<<"NO SE HA ENCONTRADO LA CANCIÓN"<<NC<<"\n";
+        cout<<ROJO<<"NO SE HA ENCONTRADO LA PLAYLIST."<<NC<<"\n";
         return;
     }
 
@@ -270,6 +306,11 @@ void buscarPlaylist(int opcion){
 }
 
 void agregarCancionPlaylist(ListaCanciones* canciones){
+
+    if(listaCanciones->tamanio == 0){
+        cout<<ROJO<<"NO HA AGREGADO NINGUNA CANCIÓN A LA STORE AÚN."<<NC<<"\n";
+        return;
+    }
 
     int opcion = 0;
     do{
@@ -284,6 +325,11 @@ void agregarCancionPlaylist(ListaCanciones* canciones){
 
         } else{
             Cancion* cancion = listaCanciones->encontrarCancionEn(opcion);
+
+            if(cancion == NULL){
+                return;
+            }
+
             cout<<"Agregando canción con nombre: "<<cancion->nombre<<"\n";
             canciones->insertar(cancion);
         }
@@ -304,6 +350,7 @@ void eliminarCancionPlaylist(ListaCanciones* canciones){
             cout<<ROJO<<"NO SE HA ENCONTRADO LA CANCIÓN"<<NC<<"\n";
 
         } else{
+
             canciones->eliminarEn(opcion);
         }
     }while(opcion != 0);

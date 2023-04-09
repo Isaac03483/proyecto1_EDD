@@ -76,6 +76,7 @@ public:
         if(posicion == 1){
             nodoInsertar->siguiente = this->primero;
             this->primero = nodoInsertar;
+            tamanio++;
             cout<<"Cancion agregada exitosamente."<<"\n";
 
             return;
@@ -85,6 +86,7 @@ public:
 
         nodoInsertar->siguiente = nodoEncontrar->siguiente;
         nodoEncontrar->siguiente = nodoInsertar;
+        tamanio++;
         cout<<"Cancion agregada exitosamente."<<"\n";
 
     }
@@ -114,10 +116,11 @@ public:
         int indice = 0;
         NodoCancion* nodoCancion = this->primero;
         while(nodoCancion != NULL){
-            if(nodoCancion->cancion->nombre == nombre){
-                return indice+". "+nodoCancion->cancion->nombre+" "+nodoCancion->cancion->path;
-            }
             indice++;
+
+            if(nodoCancion->cancion->nombre == nombre){
+                return to_string(indice)+". Nombre: "+nodoCancion->cancion->nombre+". Ruta: "+nodoCancion->cancion->path;
+            }
             nodoCancion = nodoCancion->siguiente;
         }
 
@@ -154,7 +157,7 @@ private:
     NodoCancion* encontrarUltimo(){
         NodoCancion* nodo = this->primero;
         while(nodo->siguiente != NULL){
-            cout<<"NodoCancion actual "<<nodo->cancion->nombre<<"\n";
+//            cout<<"NodoCancion actual "<<nodo->cancion->nombre<<"\n";
             nodo = nodo->siguiente;
 
         }
