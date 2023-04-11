@@ -4,6 +4,7 @@
 
 #include <cstring>
 #include <iostream>
+#include<fstream>
 
 #ifndef PROYECTO1_EDD_CANCION_H
 #define PROYECTO1_EDD_CANCION_H
@@ -149,6 +150,10 @@ public:
             return NULL;
         }
 
+        if(indice == 1){
+            return this->primero->cancion;
+        }
+
         NodoCancion* nodoCancion = encontrarEn(indice);
         return nodoCancion->siguiente->cancion;
     }
@@ -188,8 +193,8 @@ public:
     NodoDoble* siguiente;
     NodoDoble* anterior;
 
-    NodoDoble(Cancion* cancion){
-       this->cancion = cancion;
+    NodoDoble(){
+       this->cancion = NULL;
        this->siguiente = NULL;
        this->anterior = NULL;
     }
@@ -200,15 +205,20 @@ public:
 };
 
 struct ListaDoble{
+
 public:
     int tamanio = 0;
     NodoDoble* primero;
+    NodoDoble* actual;
 
     ListaDoble(){
         this->primero = NULL;
     }
 
-    void insertar(NodoDoble* nodoInsertar){
+    void insertar(Cancion* cancion){
+
+        NodoDoble* nodoInsertar = new NodoDoble();
+        nodoInsertar->cancion = cancion;
 
         if(primero == NULL){
             primero = nodoInsertar;
@@ -218,6 +228,32 @@ public:
         NodoDoble* ultimoNodo = encontrarUltimo();
         ultimoNodo->siguiente = nodoInsertar;
         nodoInsertar->anterior = ultimoNodo;
+
+    }
+
+    Cancion* reproducir(){
+        if(this->actual == NULL){
+            this->actual = primero;
+        }
+
+        return actual->cancion;
+    }
+
+    Cancion* siguiente(){
+        this->actual = this->actual->siguiente;
+
+        if(this->actual == NULL){
+            return NULL;
+        }
+        return this->actual->cancion;
+    }
+
+    Cancion* anterior(){
+        this->actual = this->actual->anterior;
+        if(this->actual == NULL){
+            return NULL;
+        }
+        return this->actual->cancion;
 
     }
 
@@ -237,6 +273,7 @@ private:
 struct ListaCircular{
 public:
     NodoCancion* primero;
+    NodoCancion* actual;
 
     ListaCircular(){
         this->primero = NULL;
@@ -253,6 +290,12 @@ public:
             return;
         }
 
+        if(this->primero->siguiente == this->primero){
+            this->primero->siguiente = nodoInsertar;
+            nodoInsertar->siguiente = this->primero;
+            return;
+        }
+
         NodoCancion* ultimo = encontrarUltimo();
 
         ultimo->siguiente = nodoInsertar;
@@ -260,12 +303,30 @@ public:
 
     }
 
+    Cancion* reproducir(){
+        if(this->actual == NULL){
+            this->actual = this->primero;
+        }
+
+        return this->actual->cancion;
+    }
+
+    Cancion* siguiente(){
+        this->actual = this->actual->siguiente;
+        return this->actual->cancion;
+    }
+
+    Cancion* anterior(){
+        cout<<"Falta implementar xd.\n";
+        return this->actual->cancion;
+    }
+
 private:
 
     NodoCancion* encontrarUltimo(){
         NodoCancion* nodo = this->primero;
 
-        while(nodo->siguiente != NULL){
+        while(nodo->siguiente != this->primero){
             nodo = nodo->siguiente;
         }
 
@@ -280,8 +341,7 @@ ListaDoble* simpleADoble(ListaCanciones* lista){
     ListaDoble* listaDoble = new ListaDoble();
 
     while(nodo != NULL){
-        NodoDoble doble = NodoDoble(nodo->cancion);
-        listaDoble->insertar(&doble);
+        listaDoble->insertar(nodo->cancion);
 
         nodo = nodo->siguiente;
     }

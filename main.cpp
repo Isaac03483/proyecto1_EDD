@@ -400,6 +400,9 @@ void actualizarPlaylist(PlayList* playList){
                 cout<<ROJO<<"Opción incorrecta."<<NC<<"\n";
                 break;
         }
+
+
+
     }while(opcion != 3);
 
 }
@@ -407,10 +410,48 @@ void actualizarPlaylist(PlayList* playList){
 
 void opcionReproduccion(ListaCanciones* canciones){
 
+    canciones->listar();
+    ListaDoble* doble = simpleADoble(canciones);
+//    cout<<"Lista doble\n";
+//
+//    ListaCircular* circular = simpleACircular(canciones);
+//    cout<<"Lista circular\n";
+
+    Cancion *actual = nullptr;
+
+    cout<<"Listas declaradas\n";
+
     int opcion = 0;
     do{
+
+        if(actual != NULL){
+            cout<<"Canción actual: "<<VERDE<<actual->nombre<<NC<<"\n";
+        }
+
         menuReproduccion();
         cin>>opcion;
+
+
+        switch (opcion) {
+            case 1:
+                actual = doble->reproducir();
+                break;
+            case 2:
+//                actual = circular->reproducir();
+//                listaUsar = 2;
+                break;
+            case 3:
+                actual = doble->siguiente();
+                break;
+            case 4:
+                actual = doble->anterior();
+                break;
+        }
+
+        if(actual == NULL){
+            cout<<VERDE<<"REPRODUCCIÓN FINALIZADA."<<NC<<"\n";
+            break;
+        }
 
     }while(opcion != 7);
 
