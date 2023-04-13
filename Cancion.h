@@ -250,11 +250,23 @@ public:
 
     Cancion* anterior(){
         this->actual = this->actual->anterior;
+
         if(this->actual == NULL){
             return NULL;
         }
         return this->actual->cancion;
 
+    }
+
+    void imprimir(){
+        cout<<"IMPRIMIENDO LISTA DE REPRODUCCIÓN\n";
+        NodoDoble* nodoDoble = this->actual->siguiente;
+        while(nodoDoble != NULL){
+            cout<<"Cancion: "<<nodoDoble->cancion->nombre<<"| ";
+            nodoDoble = nodoDoble->siguiente;
+        }
+
+        cout<<"\n";
     }
 
 private:
@@ -271,9 +283,10 @@ private:
 };
 
 struct ListaCircular{
+
 public:
-    NodoCancion* primero;
-    NodoCancion* actual;
+    NodoDoble* primero;
+    NodoDoble* actual;
 
     ListaCircular(){
         this->primero = NULL;
@@ -281,25 +294,30 @@ public:
 
     void insertar(Cancion* cancion){
 
-        NodoCancion* nodoInsertar = new NodoCancion();
+        NodoDoble* nodoInsertar = new NodoDoble();
         nodoInsertar->cancion = cancion;
 
         if(primero == NULL) {
             this->primero = nodoInsertar;
             this->primero->siguiente = this->primero;
+            this->primero->anterior = this->primero;
             return;
         }
 
         if(this->primero->siguiente == this->primero){
             this->primero->siguiente = nodoInsertar;
             nodoInsertar->siguiente = this->primero;
+            nodoInsertar->anterior = this->primero;
+            this->primero->anterior = nodoInsertar;
             return;
         }
 
-        NodoCancion* ultimo = encontrarUltimo();
+        NodoDoble* ultimo = encontrarUltimo();
 
         ultimo->siguiente = nodoInsertar;
         nodoInsertar->siguiente = this->primero;
+        this->primero->anterior = nodoInsertar;
+        nodoInsertar->anterior = ultimo;
 
     }
 
@@ -312,25 +330,99 @@ public:
     }
 
     Cancion* siguiente(){
+
         this->actual = this->actual->siguiente;
+
+        if(this->actual == NULL){
+            return NULL;
+        }
+
         return this->actual->cancion;
     }
 
     Cancion* anterior(){
-        cout<<"Falta implementar xd.\n";
+
+        this->actual = this->actual->anterior;
+
+        if(this->actual == NULL){
+            return NULL;
+        }
+
         return this->actual->cancion;
+    }
+
+    void imprimir() {
+        cout<<"IMPRIMIENDO LISTA DE REPRODUCCIÓN\n";
+        NodoDoble* nodoDoble = this->actual->siguiente;
+        while(nodoDoble != this->primero){
+            cout<<"Cancion: "<<nodoDoble->cancion->nombre<<"| ";
+            nodoDoble = nodoDoble->siguiente;
+        }
+
+        cout<<"\n";
     }
 
 private:
 
-    NodoCancion* encontrarUltimo(){
-        NodoCancion* nodo = this->primero;
+    NodoDoble* encontrarUltimo(){
+        NodoDoble* nodo = this->primero;
 
         while(nodo->siguiente != this->primero){
             nodo = nodo->siguiente;
         }
 
         return nodo;
+    }
+
+};
+
+struct Pila {
+    NodoCancion* ultimo;
+
+    Pila(){
+        this->ultimo = NULL;
+    }
+
+    void apilar(Cancion* cancion){
+        NodoCancion* nodoInsertar = new NodoCancion();
+        nodoInsertar->cancion = cancion;
+
+        if(this->ultimo == NULL){
+            this->ultimo = nodoInsertar;
+            return;
+        }
+
+        nodoInsertar->siguiente = this->ultimo;
+        this->ultimo = nodoInsertar;
+
+
+    }
+
+    void imprimirPila(){
+        NodoCancion* nodoCancion = this->ultimo;
+        cout<<"Imprimiendo Pila de reproducción:\n";
+        while(nodoCancion != NULL){
+            cout<<"Canción: "<<nodoCancion->cancion->nombre<<"| ";
+            nodoCancion = nodoCancion->siguiente;
+        }
+
+        cout<<"\n";
+    }
+
+    Cancion* desapilar(){
+
+        if(vacia()){
+            return NULL;
+        }
+
+        NodoCancion* nodoDesapilar = this->ultimo;
+        this->ultimo = this->ultimo->siguiente;
+
+        return nodoDesapilar->cancion;
+    }
+
+    int vacia(){
+        return this->ultimo == NULL;
     }
 
 };
@@ -355,9 +447,9 @@ ListaCircular* simpleACircular(ListaCanciones* lista){
 
     while(nodo != NULL){
         listaCircular->insertar(nodo->cancion);
+        nodo = nodo->siguiente;
     }
 
     return listaCircular;
-
 
 }

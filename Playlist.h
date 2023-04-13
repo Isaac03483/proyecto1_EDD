@@ -34,7 +34,7 @@ public:
         siguiente = NULL;
     }
 
-    virtual ~NodoPlayList() {
+    ~NodoPlayList() {
 
     }
 
@@ -98,10 +98,11 @@ public:
         }
 
         if(posicion == 1){
-            NodoPlayList* nodoEliminar = this->primero;
-            this->primero = this->primero->siguiente;
+            NodoPlayList* nodoEliminar = primero;
+            primero = this->primero->siguiente;
             nodoEliminar->~NodoPlayList();
             tamanio--;
+            return;
         }
 
         NodoPlayList* nodoAnterior = encontrarEn(posicion);
@@ -142,9 +143,9 @@ private:
     }
 
     NodoPlayList* encontrarEn(int posicion){
-        int actual = 0;
+        int actual = 1;
         NodoPlayList* nodo = this->primero;
-        while(actual < posicion-2 && actual < tamanio){
+        while(actual < posicion-1 && actual < tamanio){
             actual++;
             nodo=nodo->siguiente;
         }

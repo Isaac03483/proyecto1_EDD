@@ -26,6 +26,7 @@ void actualizarPlaylist(PlayList* playList);
 void eliminarPlaylist();
 void agregarCancionPlaylist(ListaCanciones* canciones);
 void eliminarCancionPlaylist(ListaCanciones* canciones);
+void agregarCancionAPila(Pila* pila);
 
 ListaCanciones* listaCanciones = new ListaCanciones();
 ListaPlayList* listaPlayList = new ListaPlayList();
@@ -412,16 +413,17 @@ void opcionReproduccion(ListaCanciones* canciones){
 
     canciones->listar();
     ListaDoble* doble = simpleADoble(canciones);
+    Pila* pila = new Pila();
 //    cout<<"Lista doble\n";
 //
-//    ListaCircular* circular = simpleACircular(canciones);
+    ListaCircular* circular = simpleACircular(canciones);
 //    cout<<"Lista circular\n";
 
     Cancion *actual = nullptr;
 
     cout<<"Listas declaradas\n";
 
-    int opcion = 0;
+    int opcion = 0,listaUsar = 0;
     do{
 
         if(actual != NULL){
@@ -435,16 +437,47 @@ void opcionReproduccion(ListaCanciones* canciones){
         switch (opcion) {
             case 1:
                 actual = doble->reproducir();
+                listaUsar = 1;
                 break;
             case 2:
-//                actual = circular->reproducir();
-//                listaUsar = 2;
+                actual = circular->reproducir();
+                listaUsar = 2;
                 break;
             case 3:
-                actual = doble->siguiente();
+                if(!pila->vacia()){
+                    actual = pila->desapilar();
+                } else {
+
+                    actual = listaUsar == 1? doble->siguiente():circular->siguiente();
+                }
                 break;
             case 4:
-                actual = doble->anterior();
+
+                if(!pila->vacia()){
+                    cout<<"Reproduciendo pila de reproducción, no se puede volver a la anterior\n";
+
+                } else {
+
+                    actual = listaUsar == 1? doble->anterior():circular->anterior();
+                }
+
+                break;
+            case 5:
+                if(!pila->vacia()){
+                    cout<<CELESTE;
+                    pila->imprimirPila();
+                    cout<<NC;
+                }
+
+                cout<<VERDE;
+                listaUsar == 1? doble->imprimir():circular->imprimir();
+                cout<<NC;
+
+                break;
+            case 6:
+                agregarCancionAPila(pila);
+            case 7:
+                cout<<VERDE<<"Volviendo..."<<NC<<"\n";
                 break;
         }
 
@@ -457,6 +490,22 @@ void opcionReproduccion(ListaCanciones* canciones){
 
 }
 
+void agregarCancionAPila(Pila* pila){
+    cout<<CELESTE<<"\n\t.:LISTA DE CANCIONES:."<<NC<<"\n";
+    int indiceCancion = 0;
+    listaCanciones->listar();
+    cout<<"\n"<<VERDE<<"Ingrese la canción que desea agregar a la Pila: "<<NC;
+    cin>>indiceCancion;
+
+    if(indiceCancion == 0 || indiceCancion > listaCanciones->tamanio){
+        cout<<ROJO<<"No se encontró la canción"<<NC<<"\n";
+    }  else {
+        Cancion* cancion = listaCanciones->encontrarCancionEn(indiceCancion);
+        pila->apilar(cancion);
+
+        cout<<VERDE<<"Canción agregada a la pila."<<NC<<"\n";
+    }
+}
 
 
 //MENÚS, SIMPLEMENTE LA IMPRESIÓN DE CADA UNO DE ELLOS
